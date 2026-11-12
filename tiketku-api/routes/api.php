@@ -37,6 +37,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/events/{event}', [EventController::class, 'destroy']);
         Route::post('/events/{event}/ticket-types', [TicketTypeController::class, 'store']);
 
+        Route::post('/orders/{order}/refund', [OrderController::class, 'refund']);
         Route::get('/stats', [StatsController::class, 'index']);
     });
 });

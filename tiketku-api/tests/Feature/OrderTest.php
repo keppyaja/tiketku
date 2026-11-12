@@ -99,4 +99,26 @@ class OrderTest extends TestCase
         $this->assertSame(1, app(OrderService::class)->releaseExpired());
         $this->assertSame('available', Seat::find($seats[1])->status);
     }
+
+    public function test_admin_dapat_refund_order_paid_dan_mengembalikan_kursi(): void
+    {
+        $event = $this->buatEvent();
+        $seat = Seat::where('event_id', $event->id)->first();
+        $customer = $this->customer();
+        Sanctum::actingAs($customer);
+
+        $orderId = $this->postJson('/api/orders', [
+            'event_id' => $event->id,
+            'seat_ids' => [$seat->id],
+        ])->json('data.id');
+        $this->postJson("/api/orders/{$orderId}/pay", ['metode' => 'qris'])->assertOk();
+
+        Sanctum::actingAs(User::factory()->create(['role' => 'admin']));
+        $this->postJson("/api/orders/{$orderId}/refund")
+            ->assertOk()
+            ->assertJsonPath('data.status', Order::REFUNDED);
+
+        $this->assertSame(Seat::AVAILABLE, $seat->fresh()->status);
+        $this->assertDatabaseHas('payments', ['order_id' => $orderId]);
+    }
 }

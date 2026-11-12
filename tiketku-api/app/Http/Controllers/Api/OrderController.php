@@ -72,4 +72,9 @@ class OrderController extends Controller
 
         return new OrderResource($this->service->cancel($order)->load('user'));
     }
+
+    public function refund(Order $order): OrderResource
+    {
+        return new OrderResource($this->service->refund($order)->load('user'));
+    }
 }

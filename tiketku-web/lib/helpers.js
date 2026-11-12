@@ -12,6 +12,7 @@ const tanggal = (iso) =>
 const statusLabel = {
   pending: "Menunggu pembayaran",
   paid: "Lunas",
+  refunded: "Direfund",
   cancelled: "Dibatalkan",
   expired: "Kedaluwarsa",
 };

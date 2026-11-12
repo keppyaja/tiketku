@@ -120,4 +120,18 @@ router.get("/orders", async (req, res, next) => {
   }
 });
 
+router.post("/orders/:id/refund", async (req, res, next) => {
+  try {
+    await api(req, "POST", `/orders/${req.params.id}/refund`);
+    req.session.flash = { type: "success", text: "Tiket berhasil direfund dan kursi tersedia kembali." };
+    res.redirect("/admin/orders");
+  } catch (e) {
+    if (e instanceof ApiError && e.status === 422) {
+      req.session.flash = { type: "error", text: apiErrorText(e) };
+      return res.redirect("/admin/orders");
+    }
+    next(e);
+  }
+});
+
 module.exports = router;

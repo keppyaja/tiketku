@@ -5,7 +5,7 @@
 <form class="filters" method="GET" action="/admin/orders">
   <select name="status">
     <option value="">Semua status</option>
-    <% ["pending","paid","cancelled","expired"].forEach(s => { %>
+    <% ["pending","paid","refunded","cancelled","expired"].forEach(s => { %>
       <option value="<%= s %>" <%= query.status === s ? "selected" : "" %>><%= statusLabel[s] %></option>
     <% }) %>
   </select>
@@ -31,7 +31,14 @@
           <td><%= rupiah(o.total) %></td>
           <td><span class="status status-<%= o.status %>"><%= statusLabel[o.status] %></span></td>
           <td><%= tanggal(o.created_at) %></td>
-          <td class="actions"><a class="btn btn-sm btn-outline" href="/orders/<%= o.id %>">Detail</a></td>
+          <td class="actions">
+            <a class="btn btn-sm btn-outline" href="/orders/<%= o.id %>">Detail</a>
+            <% if (o.status === "paid") { %>
+              <form action="/admin/orders/<%= o.id %>/refund" method="POST" class="inline" onsubmit="return confirm('Refund order ini? Kursi akan tersedia kembali.')">
+                <button class="btn btn-sm btn-danger" type="submit">Refund</button>
+              </form>
+            <% } %>
+          </td>
         </tr>
       <% }) %>
     </tbody>

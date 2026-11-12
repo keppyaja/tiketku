@@ -136,6 +136,29 @@ class OrderService
     }
 
     /**
+     * Refund order paid oleh admin: kursi kembali tersedia, riwayat pembayaran tetap tersimpan.
+     */
+    public function refund(Order $order): Order
+    {
+        return DB::transaction(function () use ($order) {
+            $order = Order::whereKey($order->id)->lockForUpdate()->firstOrFail();
+
+            if ($order->status !== Order::PAID) {
+                throw ValidationException::withMessages([
+                    'order' => "Order berstatus {$order->status}, hanya order paid yang bisa direfund.",
+                ]);
+            }
+
+            Seat::whereIn('id', $order->items()->pluck('seat_id'))
+                ->where('status', Seat::SOLD)
+                ->update(['status' => Seat::AVAILABLE]);
+            $order->update(['status' => Order::REFUNDED]);
+
+            return $order->load(['event', 'items.seat.ticketType', 'payment']);
+        });
+    }
+
+    /**
      * Order pending yang lewat batas waktu => expired, kursi kembali available.
      */
     public function releaseExpired(): int

@@ -13,6 +13,7 @@ class Order extends Model
     public const PAID = 'paid';
     public const CANCELLED = 'cancelled';
     public const EXPIRED = 'expired';
+    public const REFUNDED = 'refunded';
 
     protected $fillable = ['kode_order', 'user_id', 'event_id', 'total', 'status', 'expires_at'];
 
