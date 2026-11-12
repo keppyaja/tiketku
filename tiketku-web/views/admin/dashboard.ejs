@@ -1,0 +1,26 @@
+<%- include("../partials/header") %>
+<h1>Dashboard Admin</h1>
+<div class="subnav"><a href="/admin">Dashboard</a><a href="/admin/events">Event</a><a href="/admin/orders">Order</a></div>
+
+<div class="grid grid-4">
+  <div class="card stat"><span class="muted">Total Event</span><strong><%= stats.total_event %></strong></div>
+  <div class="card stat"><span class="muted">Order Pending</span><strong><%= stats.order_pending %></strong></div>
+  <div class="card stat"><span class="muted">Tiket Terjual</span><strong><%= stats.tiket_terjual %></strong></div>
+  <div class="card stat"><span class="muted">Pendapatan</span><strong><%= rupiah(stats.pendapatan) %></strong></div>
+</div>
+
+<div class="card">
+  <h2>Penjualan per Event</h2>
+  <table>
+    <thead><tr><th>Event</th><th>Terjual</th><th>Total Kursi</th><th>Okupansi</th></tr></thead>
+    <tbody>
+      <% stats.per_event.forEach(e => { const pct = e.total_kursi ? Math.round(e.terjual / e.total_kursi * 100) : 0; %>
+        <tr>
+          <td><%= e.nama %></td><td><%= e.terjual %></td><td><%= e.total_kursi %></td>
+          <td><div class="bar"><span style="width: <%= pct %>%"></span></div> <%= pct %>%</td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>
+<%- include("../partials/footer") %>

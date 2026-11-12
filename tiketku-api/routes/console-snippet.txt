@@ -1,0 +1,4 @@
+// Tambahkan di akhir routes/console.php
+use Illuminate\Support\Facades\Schedule;
+
+Schedule::command('tiket:release-expired')->everyMinute();

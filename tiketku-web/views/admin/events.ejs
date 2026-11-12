@@ -1,0 +1,52 @@
+<%- include("../partials/header") %>
+<h1>Kelola Event</h1>
+<div class="subnav"><a href="/admin">Dashboard</a><a href="/admin/events">Event</a><a href="/admin/orders">Order</a></div>
+
+<div class="layout-2">
+  <div class="card">
+    <h2>Daftar Event</h2>
+    <table>
+      <thead><tr><th>Event</th><th>Kategori</th><th>Tanggal</th><th></th></tr></thead>
+      <tbody>
+        <% events.forEach(ev => { %>
+          <tr>
+            <td><%= ev.nama %></td>
+            <td><%= ev.category ? ev.category.nama : "-" %></td>
+            <td><%= tanggal(ev.tanggal_mulai) %></td>
+            <td class="actions">
+              <a class="btn btn-sm btn-outline" href="/admin/events/<%= ev.id %>">Kelola</a>
+              <form action="/admin/events/<%= ev.id %>/delete" method="POST" class="inline" onsubmit="return confirm('Hapus event ini?')">
+                <button class="btn btn-sm btn-danger" type="submit">Hapus</button>
+              </form>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+
+  <div>
+    <div class="card">
+      <h2>Event Baru</h2>
+      <form method="POST" action="/admin/events">
+        <label>Nama</label><input type="text" name="nama" required>
+        <label>Kategori</label>
+        <select name="category_id" required>
+          <% categories.forEach(c => { %><option value="<%= c.id %>"><%= c.nama %></option><% }) %>
+        </select>
+        <label>Lokasi</label><input type="text" name="lokasi" required>
+        <label>Tanggal &amp; Waktu</label><input type="datetime-local" name="tanggal_mulai" required>
+        <label>Deskripsi</label><textarea name="deskripsi" rows="3"></textarea>
+        <button class="btn block" type="submit">Simpan Event</button>
+      </form>
+    </div>
+    <div class="card">
+      <h2>Kategori Baru</h2>
+      <form method="POST" action="/admin/categories" class="row">
+        <input type="text" name="nama" placeholder="Nama kategori" required>
+        <button class="btn" type="submit">Tambah</button>
+      </form>
+    </div>
+  </div>
+</div>
+<%- include("../partials/footer") %>

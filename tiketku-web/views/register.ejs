@@ -1,0 +1,19 @@
+<%- include("partials/header") %>
+<div class="card narrow">
+  <h1>Daftar Akun</h1>
+  <form method="POST" action="/register">
+    <label>Nama</label>
+    <input type="text" name="name" value="<%= old.name || "" %>" required>
+    <% if (errors.name) { %><p class="error"><%= errors.name[0] %></p><% } %>
+    <label>Email</label>
+    <input type="email" name="email" value="<%= old.email || "" %>" required>
+    <% if (errors.email) { %><p class="error"><%= errors.email[0] %></p><% } %>
+    <label>Password (min. 6 karakter)</label>
+    <input type="password" name="password" required>
+    <% if (errors.password) { %><p class="error"><%= errors.password[0] %></p><% } %>
+    <label>Konfirmasi Password</label>
+    <input type="password" name="password_confirmation" required>
+    <button class="btn block" type="submit">Daftar</button>
+  </form>
+</div>
+<%- include("partials/footer") %>

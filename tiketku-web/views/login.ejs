@@ -1,0 +1,15 @@
+<%- include("partials/header") %>
+<div class="card narrow">
+  <h1>Login</h1>
+  <form method="POST" action="/login">
+    <label>Email</label>
+    <input type="email" name="email" value="<%= old.email || "" %>" required>
+    <% if (errors.email) { %><p class="error"><%= errors.email[0] %></p><% } %>
+    <label>Password</label>
+    <input type="password" name="password" required>
+    <button class="btn block" type="submit">Masuk</button>
+  </form>
+  <p class="muted small">Belum punya akun? <a href="/register">Daftar</a></p>
+  <p class="muted small">Demo: admin@tiketku.test / admin123 · budi@tiketku.test / budi123</p>
+</div>
+<%- include("partials/footer") %>

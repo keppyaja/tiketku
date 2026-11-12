@@ -1,0 +1,46 @@
+<%- include("partials/header") %>
+<div class="card">
+  <div class="row-between">
+    <h1><%= order.kode_order %></h1>
+    <span class="status status-<%= order.status %>"><%= statusLabel[order.status] %></span>
+  </div>
+  <p><strong><%= order.event.nama %></strong><br>
+     <span class="muted">📍 <%= order.event.lokasi %> · 🗓️ <%= tanggal(order.event.tanggal_mulai) %></span></p>
+
+  <table>
+    <thead><tr><th>Kursi</th><th>Jenis</th><th class="right">Harga</th></tr></thead>
+    <tbody>
+      <% order.seats.forEach(s => { %>
+        <tr><td><%= s.kode %></td><td><%= s.tipe %></td><td class="right"><%= rupiah(s.harga) %></td></tr>
+      <% }) %>
+    </tbody>
+    <tfoot><tr><th colspan="2">Total</th><th class="right"><%= rupiah(order.total) %></th></tr></tfoot>
+  </table>
+
+  <% if (order.status === "pending") { %>
+    <p class="warn">⏳ Selesaikan pembayaran dalam <strong id="countdown" data-expires="<%= order.expires_at %>">--:--</strong></p>
+    <div class="row">
+      <form action="/orders/<%= order.id %>/pay" method="POST" class="row">
+        <select name="metode" required>
+          <option value="transfer">Transfer Bank</option>
+          <option value="qris">QRIS</option>
+          <option value="kartu">Kartu Kredit/Debit</option>
+        </select>
+        <button class="btn" type="submit">Bayar <%= rupiah(order.total) %></button>
+      </form>
+      <form action="/orders/<%= order.id %>/cancel" method="POST" onsubmit="return confirm('Batalkan order ini?')">
+        <button class="btn btn-danger" type="submit">Batalkan</button>
+      </form>
+    </div>
+    <script src="/js/countdown.js"></script>
+  <% } %>
+
+  <% if (order.status === "paid" && order.payment) { %>
+    <div class="alert alert-success">
+      Dibayar via <strong><%= order.payment.metode.toUpperCase() %></strong> · Ref <%= order.payment.referensi %><br>
+      <%= tanggal(order.payment.dibayar_pada) %>
+    </div>
+  <% } %>
+</div>
+<a href="/orders">← Kembali ke daftar pesanan</a>
+<%- include("partials/footer") %>

@@ -1,0 +1,41 @@
+<%- include("../partials/header") %>
+<h1>Semua Order</h1>
+<div class="subnav"><a href="/admin">Dashboard</a><a href="/admin/events">Event</a><a href="/admin/orders">Order</a></div>
+
+<form class="filters" method="GET" action="/admin/orders">
+  <select name="status">
+    <option value="">Semua status</option>
+    <% ["pending","paid","cancelled","expired"].forEach(s => { %>
+      <option value="<%= s %>" <%= query.status === s ? "selected" : "" %>><%= statusLabel[s] %></option>
+    <% }) %>
+  </select>
+  <button class="btn" type="submit">Filter</button>
+</form>
+
+<div class="card">
+  <table>
+    <thead><tr><th>Kode</th><th>User yang Memesan</th><th>Event</th><th>Kursi</th><th>Total</th><th>Status</th><th>Dibuat</th><th></th></tr></thead>
+    <tbody>
+      <% if (orders.length === 0) { %>
+        <tr><td colspan="8" class="center muted">Belum ada order.</td></tr>
+      <% } %>
+      <% orders.forEach(o => { %>
+        <tr>
+          <td><%= o.kode_order %></td>
+          <td>
+            <%= o.user ? o.user.name : "-" %>
+            <% if (o.user && o.user.email) { %><br><span class="muted small"><%= o.user.email %></span><% } %>
+          </td>
+          <td><%= o.event.nama %></td>
+          <td><%= o.seats.map(s => s.kode).join(", ") %></td>
+          <td><%= rupiah(o.total) %></td>
+          <td><span class="status status-<%= o.status %>"><%= statusLabel[o.status] %></span></td>
+          <td><%= tanggal(o.created_at) %></td>
+          <td class="actions"><a class="btn btn-sm btn-outline" href="/orders/<%= o.id %>">Detail</a></td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>
+<%- include("../partials/pagination", { meta, baseUrl: "/admin/orders", pageQuery: { status: query.status || "" } }) %>
+<%- include("../partials/footer") %>

@@ -1,0 +1,8 @@
+<% if (meta && meta.last_page > 1) { %>
+  <div class="pagination">
+    <% for (let p = 1; p <= meta.last_page; p++) {
+         const q = new URLSearchParams(Object.assign({}, pageQuery || {}, { page: p })).toString(); %>
+      <a class="<%= p === meta.current_page ? "active" : "" %>" href="<%= baseUrl %>?<%= q %>"><%= p %></a>
+    <% } %>
+  </div>
+<% } %>

@@ -1,0 +1,36 @@
+<%- include("../partials/header") %>
+<h1><%= event.nama %></h1>
+<div class="subnav"><a href="/admin">Dashboard</a><a href="/admin/events">Event</a><a href="/admin/orders">Order</a></div>
+
+<div class="layout-2">
+  <div class="card">
+    <h2>Jenis Tiket &amp; Kursi</h2>
+    <% if (event.ticket_types.length === 0) { %><p class="muted">Belum ada jenis tiket.</p><% } %>
+    <table>
+      <thead><tr><th>Jenis</th><th>Harga</th><th>Kursi</th><th>Tersedia</th></tr></thead>
+      <tbody>
+        <% event.ticket_types.forEach(tt => { const seats = tt.seats || []; %>
+          <tr>
+            <td><%= tt.nama %></td>
+            <td><%= rupiah(tt.harga) %></td>
+            <td><%= seats.length %></td>
+            <td><%= seats.filter(s => s.status === "available").length %></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>Tambah Jenis Tiket</h2>
+    <form method="POST" action="/admin/events/<%= event.id %>/ticket-types">
+      <label>Nama (contoh: VIP)</label><input type="text" name="nama" required>
+      <label>Harga per kursi (Rp)</label><input type="number" name="harga" min="0" required>
+      <label>Prefix kode kursi (huruf, contoh: V)</label><input type="text" name="prefix" maxlength="3" required>
+      <label>Jumlah baris (1-26)</label><input type="number" name="jumlah_baris" min="1" max="26" required>
+      <label>Kursi per baris</label><input type="number" name="kursi_per_baris" min="1" max="50" required>
+      <button class="btn block" type="submit">Buat Tiket + Kursi</button>
+    </form>
+  </div>
+</div>
+<%- include("../partials/footer") %>

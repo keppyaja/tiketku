@@ -1,0 +1,33 @@
+<%- include("partials/header") %>
+<h1>Event Mendatang</h1>
+
+<form class="filters" method="GET" action="/">
+  <input type="text" name="q" placeholder="Cari nama event..." value="<%= query.q || "" %>">
+  <select name="category_id">
+    <option value="">Semua kategori</option>
+    <% categories.forEach(c => { %>
+      <option value="<%= c.id %>" <%= String(query.category_id) === String(c.id) ? "selected" : "" %>><%= c.nama %></option>
+    <% }) %>
+  </select>
+  <button class="btn" type="submit">Cari</button>
+</form>
+
+<% if (events.length === 0) { %>
+  <div class="card center muted">Belum ada event yang cocok.</div>
+<% } %>
+
+<div class="grid">
+  <% events.forEach(ev => { %>
+    <a class="card event-card" href="/events/<%= ev.id %>">
+      <span class="badge"><%= ev.category ? ev.category.nama : "-" %></span>
+      <h3><%= ev.nama %></h3>
+      <p class="muted">📍 <%= ev.lokasi %></p>
+      <p class="muted">🗓️ <%= tanggal(ev.tanggal_mulai) %></p>
+      <p class="price">Mulai <%= rupiah(ev.harga_mulai) %></p>
+      <p class="muted"><%= ev.kursi_tersedia %> kursi tersedia</p>
+    </a>
+  <% }) %>
+</div>
+
+<%- include("partials/pagination", { meta, baseUrl: "/", pageQuery: { q: query.q || "", category_id: query.category_id || "" } }) %>
+<%- include("partials/footer") %>

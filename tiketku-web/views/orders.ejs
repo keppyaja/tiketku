@@ -1,0 +1,25 @@
+<%- include("partials/header") %>
+<h1>Pesanan Saya</h1>
+<% if (orders.length === 0) { %>
+  <div class="card center muted">Belum ada pesanan. <a href="/">Cari event</a></div>
+<% } else { %>
+<div class="card">
+  <table>
+    <thead><tr><th>Kode</th><th>Event</th><th>Kursi</th><th>Total</th><th>Status</th><th></th></tr></thead>
+    <tbody>
+      <% orders.forEach(o => { %>
+        <tr>
+          <td><%= o.kode_order %></td>
+          <td><%= o.event.nama %></td>
+          <td><%= o.seats.map(s => s.kode).join(", ") %></td>
+          <td><%= rupiah(o.total) %></td>
+          <td><span class="status status-<%= o.status %>"><%= statusLabel[o.status] %></span></td>
+          <td><a class="btn btn-sm btn-outline" href="/orders/<%= o.id %>">Detail</a></td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>
+<%- include("partials/pagination", { meta, baseUrl: "/orders", pageQuery: {} }) %>
+<% } %>
+<%- include("partials/footer") %>

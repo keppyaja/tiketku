@@ -1,0 +1,55 @@
+<%- include("partials/header") %>
+<div class="card">
+  <span class="badge"><%= event.category ? event.category.nama : "-" %></span>
+  <h1><%= event.nama %></h1>
+  <p class="muted">📍 <%= event.lokasi %> &nbsp;·&nbsp; 🗓️ <%= tanggal(event.tanggal_mulai) %></p>
+  <p><%= event.deskripsi || "" %></p>
+</div>
+
+<div class="layout-2">
+  <div class="card">
+    <h2>Pilih Kursi</h2>
+    <div class="legend">
+      <span><i class="seat available"></i> Tersedia</span>
+      <span><i class="seat selected"></i> Dipilih</span>
+      <span><i class="seat held"></i> Ditahan</span>
+      <span><i class="seat sold"></i> Terjual</span>
+    </div>
+    <div class="stage">PANGGUNG</div>
+
+    <% event.ticket_types.forEach(tt => { %>
+      <h3><%= tt.nama %> <small class="muted">· <%= rupiah(tt.harga) %> / kursi</small></h3>
+      <div class="seat-grid" data-price="<%= tt.harga %>">
+        <% (tt.seats || []).forEach(s => { %>
+          <button type="button"
+                  class="seat <%= s.status %>"
+                  data-id="<%= s.id %>"
+                  data-kode="<%= s.kode %>"
+                  data-price="<%= tt.harga %>"
+                  <%= s.status !== "available" ? "disabled" : "" %>><%= s.kode %></button>
+        <% }) %>
+      </div>
+    <% }) %>
+    <% if (event.ticket_types.length === 0) { %>
+      <p class="muted">Jenis tiket belum tersedia.</p>
+    <% } %>
+  </div>
+
+  <aside class="card sticky">
+    <h2>Ringkasan</h2>
+    <form id="order-form" action="/orders" method="POST">
+      <input type="hidden" name="event_id" value="<%= event.id %>">
+      <div id="seat-inputs"></div>
+      <p id="selected-list" class="muted">Belum ada kursi dipilih.</p>
+      <p>Total: <strong id="total">Rp 0</strong></p>
+      <% if (currentUser) { %>
+        <button id="btn-order" class="btn block" type="submit" disabled>Pesan Sekarang</button>
+        <p class="muted small">Maksimal 6 kursi. Kursi ditahan 15 menit untuk pembayaran.</p>
+      <% } else { %>
+        <a class="btn block" href="/login">Login untuk memesan</a>
+      <% } %>
+    </form>
+  </aside>
+</div>
+<script src="/js/seatmap.js"></script>
+<%- include("partials/footer") %>

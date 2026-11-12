@@ -1,0 +1,78 @@
+digraph ERD {
+  graph [rankdir=LR, bgcolor="white", fontname="Helvetica", nodesep=0.5, ranksep=0.9, dpi=160];
+  node  [shape=plaintext, fontname="Helvetica", fontsize=11];
+  edge  [fontname="Helvetica", fontsize=10, color="#4f46e5", arrowsize=0.8];
+
+  users [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+    <TR><TD BGCOLOR="#4f46e5"><FONT COLOR="white"><B>users</B></FONT></TD></TR>
+    <TR><TD ALIGN="LEFT" PORT="id">PK id</TD></TR>
+    <TR><TD ALIGN="LEFT">name</TD></TR>
+    <TR><TD ALIGN="LEFT">email (unique)</TD></TR>
+    <TR><TD ALIGN="LEFT">password</TD></TR>
+    <TR><TD ALIGN="LEFT">role: admin | customer</TD></TR></TABLE>>];
+
+  categories [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+    <TR><TD BGCOLOR="#4f46e5"><FONT COLOR="white"><B>categories</B></FONT></TD></TR>
+    <TR><TD ALIGN="LEFT" PORT="id">PK id</TD></TR>
+    <TR><TD ALIGN="LEFT">nama (unique)</TD></TR></TABLE>>];
+
+  events [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+    <TR><TD BGCOLOR="#4f46e5"><FONT COLOR="white"><B>events</B></FONT></TD></TR>
+    <TR><TD ALIGN="LEFT" PORT="id">PK id</TD></TR>
+    <TR><TD ALIGN="LEFT">FK category_id</TD></TR>
+    <TR><TD ALIGN="LEFT">nama</TD></TR>
+    <TR><TD ALIGN="LEFT">lokasi</TD></TR>
+    <TR><TD ALIGN="LEFT">deskripsi</TD></TR>
+    <TR><TD ALIGN="LEFT">tanggal_mulai</TD></TR></TABLE>>];
+
+  ticket_types [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+    <TR><TD BGCOLOR="#4f46e5"><FONT COLOR="white"><B>ticket_types</B></FONT></TD></TR>
+    <TR><TD ALIGN="LEFT" PORT="id">PK id</TD></TR>
+    <TR><TD ALIGN="LEFT">FK event_id</TD></TR>
+    <TR><TD ALIGN="LEFT">nama (VIP/Reguler)</TD></TR>
+    <TR><TD ALIGN="LEFT">harga</TD></TR></TABLE>>];
+
+  seats [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+    <TR><TD BGCOLOR="#4f46e5"><FONT COLOR="white"><B>seats</B></FONT></TD></TR>
+    <TR><TD ALIGN="LEFT" PORT="id">PK id</TD></TR>
+    <TR><TD ALIGN="LEFT">FK event_id</TD></TR>
+    <TR><TD ALIGN="LEFT">FK ticket_type_id</TD></TR>
+    <TR><TD ALIGN="LEFT">kode (unique per event)</TD></TR>
+    <TR><TD ALIGN="LEFT">status: available | held | sold</TD></TR></TABLE>>];
+
+  orders [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+    <TR><TD BGCOLOR="#16a34a"><FONT COLOR="white"><B>orders (transaksi)</B></FONT></TD></TR>
+    <TR><TD ALIGN="LEFT" PORT="id">PK id</TD></TR>
+    <TR><TD ALIGN="LEFT">kode_order (unique)</TD></TR>
+    <TR><TD ALIGN="LEFT">FK user_id</TD></TR>
+    <TR><TD ALIGN="LEFT">FK event_id</TD></TR>
+    <TR><TD ALIGN="LEFT">total</TD></TR>
+    <TR><TD ALIGN="LEFT">status</TD></TR>
+    <TR><TD ALIGN="LEFT">expires_at</TD></TR></TABLE>>];
+
+  order_items [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+    <TR><TD BGCOLOR="#16a34a"><FONT COLOR="white"><B>order_items (detail)</B></FONT></TD></TR>
+    <TR><TD ALIGN="LEFT" PORT="id">PK id</TD></TR>
+    <TR><TD ALIGN="LEFT">FK order_id</TD></TR>
+    <TR><TD ALIGN="LEFT">FK seat_id</TD></TR>
+    <TR><TD ALIGN="LEFT">harga (snapshot)</TD></TR></TABLE>>];
+
+  payments [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+    <TR><TD BGCOLOR="#16a34a"><FONT COLOR="white"><B>payments</B></FONT></TD></TR>
+    <TR><TD ALIGN="LEFT" PORT="id">PK id</TD></TR>
+    <TR><TD ALIGN="LEFT">FK order_id (unique)</TD></TR>
+    <TR><TD ALIGN="LEFT">metode</TD></TR>
+    <TR><TD ALIGN="LEFT">jumlah</TD></TR>
+    <TR><TD ALIGN="LEFT">referensi (unique)</TD></TR>
+    <TR><TD ALIGN="LEFT">dibayar_pada</TD></TR></TABLE>>];
+
+  categories -> events       [label="1 : N"];
+  events -> ticket_types     [label="1 : N"];
+  events -> seats            [label="1 : N"];
+  ticket_types -> seats      [label="1 : N"];
+  users -> orders            [label="1 : N"];
+  events -> orders           [label="1 : N"];
+  orders -> order_items      [label="1 : N"];
+  seats -> order_items       [label="1 : N"];
+  orders -> payments         [label="1 : 1"];
+}

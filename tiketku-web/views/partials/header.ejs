@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title><%= title %> · TiketKu</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<nav class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="/">🎟️ TiketKu</a>
+    <div class="nav-links">
+      <a href="/">Event</a>
+      <% if (currentUser) { %>
+        <a href="/orders"><%= currentUser.role === "admin" ? "Riwayat Pesanan" : "Pesanan Saya" %></a>
+        <% if (currentUser.role === "admin") { %>
+          <a href="/admin">Admin</a>
+        <% } %>
+        <form action="/logout" method="POST" class="inline">
+          <span class="muted"><%= currentUser.name %></span>
+          <button class="btn btn-sm btn-outline" type="submit">Logout</button>
+        </form>
+      <% } else { %>
+        <a href="/login">Login</a>
+        <a class="btn btn-sm" href="/register">Daftar</a>
+      <% } %>
+    </div>
+  </div>
+</nav>
+<main class="container">
+  <% if (flash) { %>
+    <div class="alert alert-<%= flash.type %>"><%= flash.text %></div>
+  <% } %>
