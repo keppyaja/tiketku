@@ -7,7 +7,6 @@ Aplikasi pemesanan tiket event: **Laravel 12 REST API** + **Express/EJS web clie
 ```
 tiketku-api/   REST API Laravel 12 (Sanctum, SQLite/MySQL)
 tiketku-web/   Web client Express + EJS
-docs/          ERD proyek
 ```
 
 ## Quick start
