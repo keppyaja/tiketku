@@ -5,7 +5,7 @@ Aplikasi pemesanan tiket event dengan arsitektur dua service:
 - **Laravel 12 REST API** untuk autentikasi, event, kursi, order, pembayaran,
   dan dashboard admin.
 - **Express + EJS web client** sebagai antarmuka server-rendered untuk customer
-  dan admin.
+  dan admin, dengan animasi GSAP.
 
 ## Teknologi dan struktur
 

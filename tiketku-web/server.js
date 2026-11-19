@@ -11,6 +11,7 @@ app.set("views", path.join(__dirname, "views"));
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
+app.use("/vendor/gsap", express.static(path.join(__dirname, "node_modules/gsap/dist")));
 app.use(
   session({
     secret: process.env.SESSION_SECRET || "dev-secret-tiketku",

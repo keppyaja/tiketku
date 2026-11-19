@@ -31,8 +31,8 @@ body.dark-theme .nav, body.dark-theme .footer { background: #1f2937; }
 
 .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 20px; margin-bottom: 16px; }
 .card.narrow { max-width: 420px; margin: 24px auto; }
-.event-card { display: block; color: inherit; transition: box-shadow .15s, transform .15s; }
-.event-card:hover { box-shadow: 0 6px 20px rgba(0,0,0,.08); transform: translateY(-2px); }
+.event-card { display: block; color: inherit; transition: box-shadow .15s; }
+.event-card:hover { box-shadow: 0 6px 20px rgba(0,0,0,.08); }
 .event-card h3 { margin: 8px 0; } .event-card p { margin: 4px 0; }
 .price { font-weight: 700; color: var(--primary); }
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 16px; }

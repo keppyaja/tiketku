@@ -2,7 +2,8 @@
 
 Web client server-rendered berbasis Express dan EJS yang memanggil REST API
 Laravel di `tiketku-api`. Session web menyimpan token Sanctum dan data user
-yang sedang login.
+yang sedang login. GSAP digunakan untuk animasi entry halaman, kartu event/order,
+dan interaksi kursi.
 
 ## Prasyarat
 
@@ -56,6 +57,11 @@ npm run dev
 - `/admin/orders` — semua order pelanggan
 
 Tema terang/gelap tersedia dari tombol di navigasi dan tersimpan di browser.
+Animasi otomatis dinonaktifkan ketika browser mengaktifkan
+`prefers-reduced-motion`.
+
+GSAP dimuat dari dependency lokal `gsap` melalui
+<https://gsap.com/>.
 
 ## Akun demo
 
