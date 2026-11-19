@@ -1,6 +1,13 @@
 :root {
+  color-scheme: light dark;
   --bg: #f5f6fa; --card: #fff; --text: #1f2430; --muted: #6b7280; --line: #e5e7eb;
   --primary: #4f46e5; --primary-dark: #4338ca; --danger: #dc2626; --ok: #16a34a; --warn: #d97706;
+}
+:root:has(> head > meta[name="color-scheme"][content="dark"]) {
+  color-scheme: dark;
+}
+:root:has(> head > meta[name="color-scheme"][content="light"]) {
+  color-scheme: light;
 }
 body.dark-theme {
   --bg: #111827; --card: #1f2937; --text: #f9fafb; --muted: #9ca3af; --line: #374151;

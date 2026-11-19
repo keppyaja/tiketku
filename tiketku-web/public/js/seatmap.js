@@ -11,7 +11,7 @@
   const rupiah = (n) => "Rp " + new Intl.NumberFormat("id-ID").format(n);
 
   function render() {
-    inputs.innerHTML = "";
+    inputs.replaceChildren();
     let total = 0;
     selected.forEach((seat, id) => {
       total += seat.price;

@@ -3,6 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <script>
+    document.querySelector('meta[name="color-scheme"]').content = localStorage.getItem("theme") ?? "light dark";
+  </script>
   <title><%= title %> · TiketKu</title>
   <link rel="stylesheet" href="/css/style.css">
 </head>
