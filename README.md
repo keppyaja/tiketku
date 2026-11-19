@@ -1,17 +1,29 @@
 # TiketKu
 
-Aplikasi pemesanan tiket event: **Laravel 12 REST API** + **Express/EJS web client**.
+Aplikasi pemesanan tiket event dengan arsitektur dua service:
 
-## Struktur
+- **Laravel 12 REST API** untuk autentikasi, event, kursi, order, pembayaran,
+  dan dashboard admin.
+- **Express + EJS web client** sebagai antarmuka server-rendered untuk customer
+  dan admin.
+
+## Teknologi dan struktur
 
 ```
-tiketku-api/   REST API Laravel 12 (Sanctum, SQLite/MySQL)
-tiketku-web/   Web client Express + EJS
+tiketku-api/   Laravel 12 API (Sanctum, SQLite/MySQL)
+tiketku-web/   Express/EJS web client
+start.sh       Menjalankan API dan web secara bersamaan
 ```
 
-## Quick start
+## Prasyarat
 
-Pastikan dependency sudah terpasang satu kali:
+- PHP >= 8.2 dan Composer
+- Node.js >= 18 dan npm
+- Bash untuk menjalankan `start.sh`
+
+## Menjalankan project
+
+Install dependency masing-masing service:
 
 ```bash
 cd tiketku-api && composer install
@@ -19,21 +31,45 @@ cd ../tiketku-web && npm install
 cd ..
 ```
 
-Jalankan API dan web bersamaan dari root project:
+Siapkan konfigurasi API jika belum ada:
+
+```bash
+cd tiketku-api
+cp .env.example .env
+php artisan key:generate
+touch database/database.sqlite
+php artisan migrate:fresh --seed
+cd ..
+```
+
+Jalankan kedua service dari root project:
 
 ```bash
 ./start.sh
 ```
 
-Buka <http://localhost:3000>. API berjalan di <http://127.0.0.1:8000>.
+Setelah itu:
 
-Tekan `Ctrl+C` untuk menghentikan API dan web sekaligus. Jika database belum
-diinisialisasi, jalankan sekali:
+- Web: <http://localhost:3000>
+- API: <http://127.0.0.1:8000>
+
+Tekan `Ctrl+C` untuk menghentikan keduanya. `start.sh` membutuhkan folder
+`tiketku-api/vendor` dan `tiketku-web/node_modules` yang sudah tersedia.
+
+Untuk melepas kursi dari order yang kedaluwarsa secara otomatis, jalankan
+scheduler Laravel di terminal lain:
 
 ```bash
 cd tiketku-api
-php artisan migrate:fresh --seed
+php artisan schedule:work
 cd ..
+```
+
+Alternatifnya, perintah satu kali dapat dijalankan secara manual:
+
+```bash
+cd tiketku-api
+php artisan tiket:release-expired
 ```
 
 ## Akun demo
@@ -41,17 +77,26 @@ cd ..
 | Role     | Email                | Password |
 | -------- | -------------------- | -------- |
 | Admin    | `admin@tiketku.test` | `admin123` |
-| Customer | `budi@tiketku.test`  | `budi123`  |
+| Customer | `budi@tiketku.test`   | `budi123`  |
 
 ## Fitur
 
 - Daftar, cari, dan filter event berdasarkan kategori
 - Peta kursi interaktif (maksimal 6 kursi per order)
-- Penahanan kursi 15 menit + hitung mundur pembayaran
+- Penahanan kursi 15 menit dan hitung mundur pembayaran
 - Pembayaran simulasi (transfer, QRIS, kartu)
-- Pembatalan/kedaluwarsa order otomatis melepas kursi
-- Dashboard admin: statistik, event, kategori, jenis tiket, semua order
-- Otorisasi customer/admin dan transaksi database yang atomik
+- Pembatalan, refund, dan kedaluwarsa order melepas kursi
+- Dashboard admin: statistik, event, kategori, jenis tiket, dan semua order
+- Otorisasi customer/admin dengan Sanctum
+- Transaksi database atomik saat membuat order dan mengubah status kursi
 
-Instruksi lebih lengkap ada di `tiketku-api/README.md` dan
-`tiketku-web/README.md`.
+## Pengujian
+
+Jalankan test API dari folder `tiketku-api`:
+
+```bash
+php artisan test
+```
+
+Dokumentasi detail tersedia di [tiketku-api/README.md](tiketku-api/README.md)
+dan [tiketku-web/README.md](tiketku-web/README.md).

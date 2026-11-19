@@ -1,16 +1,26 @@
-# TiketKu Web (Express + Node)
+# TiketKu Web
 
-Front-end server-rendered (EJS) yang memanggil REST API Laravel (`tiketku-api`).
+Web client server-rendered berbasis Express dan EJS yang memanggil REST API
+Laravel di `tiketku-api`. Session web menyimpan token Sanctum dan data user
+yang sedang login.
 
-## Menjalankan
+## Prasyarat
+
+- Node.js >= 18
+- npm
+- API Laravel berjalan di `http://127.0.0.1:8000`
+
+## Setup dan menjalankan
 
 ```bash
 cd tiketku-web
 npm install
-npm start          # http://localhost:3000
+cp .env.example .env       # opsional, untuk mengubah konfigurasi default
+npm start                   # http://localhost:3000
 ```
 
-Jalankan API Laravel lebih dulu di `http://127.0.0.1:8000`.
+Jalankan API Laravel lebih dulu. Dari root project, kedua service juga dapat
+dijalankan bersamaan dengan `./start.sh`.
 
 Variabel lingkungan opsional:
 
@@ -20,7 +30,19 @@ API_URL=http://127.0.0.1:8000/api
 SESSION_SECRET=ganti-dengan-string-acak
 ```
 
-Contoh: `API_URL=http://127.0.0.1:8000/api npm start`.
+`SESSION_SECRET` harus diganti dengan string acak pada deployment.
+
+Contoh:
+
+```bash
+API_URL=http://127.0.0.1:8000/api npm start
+```
+
+Untuk pengembangan dengan Node watch mode:
+
+```bash
+npm run dev
+```
 
 ## Halaman
 
@@ -32,6 +54,8 @@ Contoh: `API_URL=http://127.0.0.1:8000/api npm start`.
 - `/admin` — dashboard statistik (khusus admin)
 - `/admin/events` — kelola event, kategori, jenis tiket + kursi
 - `/admin/orders` — semua order pelanggan
+
+Tema terang/gelap tersedia dari tombol di navigasi dan tersimpan di browser.
 
 ## Akun demo
 
