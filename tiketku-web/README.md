@@ -52,6 +52,7 @@ npm run dev
 - `/register`, `/login` — autentikasi
 - `/orders` — riwayat pesanan customer
 - `/orders/:id` — detail, hitung mundur pembayaran, bayar/batalkan
+- `/profile` — ubah username dan foto profil
 - `/admin` — dashboard statistik (khusus admin)
 - `/admin/events` — kelola event, kategori, jenis tiket + kursi
 - `/admin/orders` — semua order pelanggan
@@ -59,6 +60,10 @@ npm run dev
 Tema terang/gelap tersedia dari tombol di navigasi dan tersimpan di browser.
 Animasi otomatis dinonaktifkan ketika browser mengaktifkan
 `prefers-reduced-motion`.
+
+Foto profil menerima JPG, PNG, atau WebP dengan ukuran maksimal 2 MB.
+Server memeriksa tipe dan dimensi gambar; permintaan ubah profil dilindungi
+token CSRF. Set `SESSION_SECRET` saat `NODE_ENV=production`.
 
 GSAP dimuat dari dependency lokal `gsap` melalui
 <https://gsap.com/>.

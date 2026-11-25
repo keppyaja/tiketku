@@ -12,8 +12,8 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        User::create(['name' => 'Admin TiketKu', 'email' => 'admin@tiketku.test', 'password' => 'admin123', 'role' => 'admin']);
-        User::create(['name' => 'Budi Santoso', 'email' => 'budi@tiketku.test', 'password' => 'budi123', 'role' => 'customer']);
+        User::create(['name' => 'Admin TiketKu', 'username' => 'admin_tiketku', 'email' => 'admin@tiketku.test', 'password' => 'admin123', 'role' => 'admin']);
+        User::create(['name' => 'Budi Santoso', 'username' => 'budi_santoso', 'email' => 'budi@tiketku.test', 'password' => 'budi123', 'role' => 'customer']);
 
         $kategori = collect(['Konser', 'Seminar', 'Olahraga'])
             ->mapWithKeys(fn ($nama) => [$nama => Category::create(['nama' => $nama])]);

@@ -82,6 +82,7 @@ php artisan tiket:release-expired
 ## Fitur
 
 - Daftar, cari, dan filter event berdasarkan kategori
+- Profil customer: ubah username dan foto profil
 - Peta kursi interaktif (maksimal 6 kursi per order)
 - Penahanan kursi 15 menit dan hitung mundur pembayaran
 - Pembayaran simulasi (transfer, QRIS, kartu)

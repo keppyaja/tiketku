@@ -23,6 +23,10 @@ php artisan serve --host=127.0.0.1 --port=8000
 Database default memakai **SQLite** (`database/database.sqlite`) sehingga tidak
 memerlukan server database tambahan. Untuk memakai MySQL, ubah `.env`:
 
+Untuk database yang sudah berisi data, gunakan `php artisan migrate` agar
+kolom profil baru ditambahkan tanpa menghapus data. `migrate:fresh` menghapus
+dan membuat ulang seluruh tabel.
+
 ```env
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
@@ -58,12 +62,19 @@ server API jika ingin pelepasan kursi berjalan otomatis.
 
 - Semua request wajib memakai header `Accept: application/json`.
 - Endpoint publik: `POST /api/register`, `POST /api/login`, kategori, daftar
-  event, dan detail event.
+  event, detail event, dan foto profil publik.
 - Endpoint terautentikasi memakai Bearer token Sanctum dari `POST /api/login`
   melalui header `Authorization: Bearer <token>`.
-- Endpoint customer: profil, daftar/detail order, pembuatan order, pembayaran,
+- Endpoint customer: `GET /api/me`, `POST /api/profile` untuk memperbarui
+  username/foto profil, daftar/detail order, pembuatan order, pembayaran,
   dan pembatalan.
 - Endpoint admin: statistik, CRUD event/kategori, tambah jenis tiket dan kursi,
   serta refund order.
+
+Upload foto profil menerima JPG, PNG, atau WebP hingga 2 MB dan divalidasi
+berdasarkan tipe serta dimensi gambar. Berkas disimpan dengan nama acak pada
+disk privat dan endpoint avatar hanya menyajikan berkas foto, bukan path
+penyimpanan atau data pengguna lainnya. Pembaruan profil dibatasi hingga 10
+permintaan per menit per pengguna.
 
 Zona waktu aplikasi memakai `APP_TIMEZONE=Asia/Jakarta`.

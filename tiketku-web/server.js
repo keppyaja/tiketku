@@ -1,10 +1,17 @@
 const path = require("path");
+const crypto = require("node:crypto");
 const express = require("express");
 const session = require("express-session");
 const { ApiError } = require("./lib/api");
 const helpers = require("./lib/helpers");
 
 const app = express();
+const isProduction = process.env.NODE_ENV === "production";
+const sessionSecret = process.env.SESSION_SECRET || (isProduction ? null : crypto.randomBytes(32).toString("hex"));
+
+if (!sessionSecret) {
+  throw new Error("SESSION_SECRET wajib disetel ketika NODE_ENV=production.");
+}
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
@@ -14,10 +21,15 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/vendor/gsap", express.static(path.join(__dirname, "node_modules/gsap/dist")));
 app.use(
   session({
-    secret: process.env.SESSION_SECRET || "dev-secret-tiketku",
+    secret: sessionSecret,
     resave: false,
     saveUninitialized: false,
-    cookie: { httpOnly: true, maxAge: 1000 * 60 * 60 * 8 },
+    cookie: {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: isProduction,
+      maxAge: 1000 * 60 * 60 * 8,
+    },
   })
 );
 
@@ -34,6 +46,7 @@ app.use((req, res, next) => {
 });
 
 app.use("/", require("./routes/public"));
+app.use("/profile", require("./routes/profile"));
 app.use("/orders", require("./routes/orders"));
 app.use("/admin", require("./routes/admin"));
 

@@ -3,18 +3,32 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
     public function register(Request $request): JsonResponse
     {
+        $username = $request->input('username');
+        if (! is_string($username) || trim($username) === '') {
+            $name = $request->input('name');
+            $base = is_string($name) ? Str::slug($name, '_') : 'user';
+            $username = mb_substr($base !== '' ? $base : 'user', 0, 20)
+                .'_'.Str::lower(Str::random(8));
+            $request->merge(['username' => $username]);
+        } else {
+            $request->merge(['username' => mb_strtolower(trim($username))]);
+        }
+
         $data = $request->validate([
             'name' => 'required|string|max:100',
+            'username' => 'required|string|min:3|max:30|alpha_dash|unique:users,username',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:6|confirmed',
         ]);
@@ -22,7 +36,10 @@ class AuthController extends Controller
         $user = User::create($data + ['role' => 'customer']);
 
         return response()->json([
-            'data' => ['token' => $user->createToken('web')->plainTextToken, 'user' => $this->userData($user)],
+            'data' => [
+                'token' => $user->createToken('web')->plainTextToken,
+                'user' => UserResource::make($user),
+            ],
         ], 201);
     }
 
@@ -40,7 +57,10 @@ class AuthController extends Controller
         }
 
         return response()->json([
-            'data' => ['token' => $user->createToken('web')->plainTextToken, 'user' => $this->userData($user)],
+            'data' => [
+                'token' => $user->createToken('web')->plainTextToken,
+                'user' => UserResource::make($user),
+            ],
         ]);
     }
 
@@ -53,11 +73,6 @@ class AuthController extends Controller
 
     public function me(Request $request): JsonResponse
     {
-        return response()->json(['data' => $this->userData($request->user())]);
-    }
-
-    private function userData(User $user): array
-    {
-        return ['id' => $user->id, 'name' => $user->name, 'email' => $user->email, 'role' => $user->role];
+        return response()->json(['data' => UserResource::make($request->user())]);
     }
 }

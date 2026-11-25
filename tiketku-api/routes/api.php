@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\EventController;
 use App\Http\Controllers\Api\OrderController;
+use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\StatsController;
 use App\Http\Controllers\Api\TicketTypeController;
 use App\Http\Middleware\AdminOnly;
@@ -15,11 +16,15 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::get('/categories', [CategoryController::class, 'index']);
 Route::get('/events', [EventController::class, 'index']);
 Route::get('/events/{event}', [EventController::class, 'show']);
+Route::get('/users/{user}/avatar', [ProfileController::class, 'avatar'])
+    ->whereNumber('user')
+    ->name('users.avatar');
 
 // ---------- Harus login (Bearer token Sanctum) ----------
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/me', [AuthController::class, 'me']);
+    Route::post('/profile', [ProfileController::class, 'update'])->middleware('throttle:10,1');
 
     Route::get('/orders', [OrderController::class, 'index']);
     Route::post('/orders', [OrderController::class, 'store']);

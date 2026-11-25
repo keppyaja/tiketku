@@ -11,7 +11,8 @@ class ApiError extends Error {
 
 async function api(req, method, path, body) {
   const headers = { Accept: "application/json" };
-  if (body) headers["Content-Type"] = "application/json";
+  const isFormData = body instanceof FormData;
+  if (body && !isFormData) headers["Content-Type"] = "application/json";
   if (req.session && req.session.token) headers.Authorization = `Bearer ${req.session.token}`;
 
   let res;
@@ -19,7 +20,7 @@ async function api(req, method, path, body) {
     res = await fetch(BASE + path, {
       method,
       headers,
-      body: body ? JSON.stringify(body) : undefined,
+      body: body ? (isFormData ? body : JSON.stringify(body)) : undefined,
     });
   } catch (e) {
     throw new ApiError("API Laravel tidak dapat dihubungi. Pastikan php artisan serve berjalan.", 503);

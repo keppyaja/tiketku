@@ -22,7 +22,14 @@
           <a href="/admin">Admin</a>
         <% } %>
         <form action="/logout" method="POST" class="inline">
-          <span class="muted"><%= currentUser.name %></span>
+          <a class="profile-link" href="/profile">
+            <% if (currentUser.avatar_url) { %>
+              <img class="nav-avatar" src="<%= currentUser.avatar_url %>" alt="">
+            <% } else { %>
+              <span class="nav-avatar avatar-fallback" aria-hidden="true"><%= (currentUser.username || currentUser.name).slice(0, 1).toUpperCase() %></span>
+            <% } %>
+            <span><%= currentUser.username || currentUser.name %></span>
+          </a>
           <button class="btn btn-sm btn-outline" type="submit">Logout</button>
         </form>
       <% } else { %>

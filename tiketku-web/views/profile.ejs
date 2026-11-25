@@ -1,0 +1,59 @@
+<%- include("partials/header") %>
+<div class="card narrow">
+  <h1 id="profile-heading">Profil Saya</h1>
+  <p class="muted">Ubah username dan foto profil. Login tetap menggunakan email; email akun tidak diubah dari halaman ini.</p>
+
+  <div class="profile-avatar-preview">
+    <% if (user.avatar_url) { %>
+      <img id="avatar-preview" src="<%= user.avatar_url %>" alt="Foto profil saat ini">
+      <span id="avatar-fallback" class="avatar-fallback" hidden aria-hidden="true"><%= (user.username || user.name || "U").slice(0, 1).toUpperCase() %></span>
+    <% } else { %>
+      <img id="avatar-preview" alt="Pratinjau foto profil" hidden>
+      <span id="avatar-fallback" class="avatar-fallback" aria-hidden="true"><%= (user.username || user.name || "U").slice(0, 1).toUpperCase() %></span>
+    <% } %>
+  </div>
+
+  <form action="/profile" method="POST" enctype="multipart/form-data" aria-labelledby="profile-heading">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+    <label for="username">Username</label>
+    <input
+      id="username"
+      type="text"
+      name="username"
+      value="<%= old.username ?? user.username %>"
+      minlength="3"
+      maxlength="30"
+      autocomplete="nickname"
+      autocorrect="off"
+      autocapitalize="none"
+      spellcheck="false"
+      aria-describedby="username-help<%= errors.username ? ' username-error' : '' %>"
+      aria-invalid="<%= errors.username ? 'true' : 'false' %>"
+      required>
+    <p id="username-help" class="muted small">3–30 karakter; gunakan huruf, angka, tanda hubung, atau garis bawah. Username harus unik.</p>
+    <% if (errors.username) { %><p id="username-error" class="error"><%= errors.username[0] %></p><% } %>
+
+    <label for="avatar">Foto profil</label>
+    <input
+      id="avatar"
+      type="file"
+      name="avatar"
+      accept="image/jpeg,image/png,image/webp"
+      aria-describedby="avatar-help<%= errors.avatar ? ' avatar-error' : '' %>"
+      aria-invalid="<%= errors.avatar ? 'true' : 'false' %>">
+    <p id="avatar-help" class="muted small">JPG, PNG, atau WebP. Ukuran 64×64 hingga 2048×2048 piksel; maksimal 2 MB.</p>
+    <% if (errors.avatar) { %><p id="avatar-error" class="error"><%= errors.avatar[0] %></p><% } %>
+
+    <% if (user.avatar_url) { %>
+      <label class="checkbox-row" for="remove-avatar">
+        <input id="remove-avatar" type="checkbox" name="remove_avatar" value="1">
+        Hapus foto profil saat ini
+      </label>
+    <% } %>
+
+    <button class="btn block" type="submit">Simpan perubahan</button>
+  </form>
+</div>
+<script src="/js/profile.js" defer></script>
+<%- include("partials/footer") %>

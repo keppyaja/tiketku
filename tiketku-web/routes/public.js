@@ -3,6 +3,21 @@ const { api, ApiError } = require("../lib/api");
 
 const router = express.Router();
 
+function establishSession(req, res, data, destination, flash, next) {
+  req.session.regenerate((error) => {
+    if (error) return next(error);
+
+    req.session.token = data.token;
+    req.session.user = data.user;
+    if (flash) req.session.flash = flash;
+
+    req.session.save((saveError) => {
+      if (saveError) return next(saveError);
+      res.redirect(destination);
+    });
+  });
+}
+
 // Daftar event + pencarian + filter kategori
 router.get("/", async (req, res, next) => {
   try {
@@ -46,11 +61,8 @@ router.post("/login", async (req, res, next) => {
       email: req.body.email,
       password: req.body.password,
     });
-    req.session.token = data.token;
-    req.session.user = data.user;
     const dest = req.session.returnTo || (data.user.role === "admin" ? "/admin" : "/");
-    delete req.session.returnTo;
-    res.redirect(dest);
+    establishSession(req, res, data, dest, null, next);
   } catch (e) {
     if (e instanceof ApiError && e.status === 422) {
       return res.status(422).render("login", { title: "Login", errors: e.errors, old: req.body });
@@ -65,14 +77,19 @@ router.post("/register", async (req, res, next) => {
   try {
     const { data } = await api(req, "POST", "/register", {
       name: req.body.name,
+      username: req.body.username,
       email: req.body.email,
       password: req.body.password,
       password_confirmation: req.body.password_confirmation,
     });
-    req.session.token = data.token;
-    req.session.user = data.user;
-    req.session.flash = { type: "success", text: "Pendaftaran berhasil. Selamat datang!" };
-    res.redirect("/");
+    establishSession(
+      req,
+      res,
+      data,
+      "/",
+      { type: "success", text: "Pendaftaran berhasil. Selamat datang!" },
+      next
+    );
   } catch (e) {
     if (e instanceof ApiError && e.status === 422) {
       return res.status(422).render("register", { title: "Daftar", errors: e.errors, old: req.body });
