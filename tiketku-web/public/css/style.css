@@ -45,7 +45,7 @@ body.dark-theme .nav, body.dark-theme .footer { background: #1f2937; }
 
 .badge { display: inline-block; background: #eef2ff; color: var(--primary); border-radius: 999px; padding: 2px 10px; font-size: .78rem; font-weight: 600; }
 .btn { display: inline-block; background: var(--primary); color: #fff; border: 0; border-radius: 8px; padding: 9px 16px; font-size: .95rem; cursor: pointer; }
-.btn:hover { background: var(--primary-dark); } .btn:disabled { background: #c7c9d1; cursor: not-allowed; }
+.btn:hover { background: var(--primary-dark); } .btn:disabled { background: #c7c9d1; color: #374151; cursor: not-allowed; }
 .btn-sm { padding: 5px 10px; font-size: .85rem; } .btn.block { display: block; width: 100%; text-align: center; margin-top: 12px; }
 .btn-outline { background: transparent; color: var(--primary); border: 1px solid var(--primary); } .btn-outline:hover { background: #eef2ff; }
 body.dark-theme .btn-outline:hover { background: #312e81; }
@@ -73,11 +73,15 @@ th.right, td.right { text-align: right; }
 
 .stage { background: #1f2430; color: #fff; text-align: center; padding: 8px; border-radius: 6px; margin: 12px 0; letter-spacing: 4px; font-size: .8rem; }
 .seat-grid { display: flex; flex-wrap: wrap; gap: 8px; }
-.seat { min-width: 52px; padding: 8px 6px; border-radius: 8px; border: 1px solid #cfd3dc; background: #fff; font-size: .8rem; font-weight: 600; cursor: pointer; }
+.seat { min-width: 52px; padding: 8px 6px; border-radius: 8px; border: 1px solid #cfd3dc; background: #fff; color: #1f2430; font-size: .8rem; font-weight: 600; cursor: pointer; }
 .seat.available:hover { border-color: var(--primary); }
-.seat.selected { background: var(--primary); color: #fff; border-color: var(--primary); }
-.seat.held { background: #fde68a; border-color: #f59e0b; cursor: not-allowed; }
-.seat.sold { background: #d1d5db; color: #6b7280; cursor: not-allowed; text-decoration: line-through; }
+.seat.selected { --seat-selected-bg: var(--primary); background: var(--seat-selected-bg); color: #fff; border-color: var(--primary); }
+.seat.held { background: #fde68a; color: #78350f; border-color: #f59e0b; cursor: not-allowed; }
+.seat.sold { background: #d1d5db; color: #4b5563; cursor: not-allowed; text-decoration: line-through; }
+body.dark-theme .seat.selected { color: #111827; }
+@supports (color: contrast-color(white)) {
+  .seat.selected { color: contrast-color(var(--seat-selected-bg)); }
+}
 .legend { display: flex; gap: 16px; font-size: .85rem; color: var(--muted); flex-wrap: wrap; }
 .legend .seat { display: inline-block; min-width: 0; width: 16px; height: 16px; padding: 0; vertical-align: middle; cursor: default; }
 
