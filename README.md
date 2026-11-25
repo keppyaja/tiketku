@@ -35,12 +35,15 @@ Siapkan konfigurasi API jika belum ada:
 
 ```bash
 cd tiketku-api
-cp .env.example .env
-php artisan key:generate
+cp .env.example .env                # hanya jika .env belum ada
+php artisan key:generate             # hanya jika APP_KEY belum terisi
 touch database/database.sqlite
-php artisan migrate:fresh --seed
+php artisan migrate:fresh --seed     # setup database baru; menghapus data lama
 cd ..
 ```
+
+Jika database sudah berisi data, jalankan `cd tiketku-api && php artisan migrate`
+agar skema baru (termasuk profil pengguna) diterapkan tanpa menghapus data.
 
 Jalankan kedua service dari root project:
 
@@ -82,7 +85,8 @@ php artisan tiket:release-expired
 ## Fitur
 
 - Daftar, cari, dan filter event berdasarkan kategori
-- Profil customer: ubah username dan foto profil
+- Profil customer: username unik, upload/preview/hapus foto profil
+  (JPG/PNG/WebP, maksimal 2 MB)
 - Peta kursi interaktif (maksimal 6 kursi per order)
 - Penahanan kursi 15 menit dan hitung mundur pembayaran
 - Pembayaran simulasi (transfer, QRIS, kartu)
@@ -90,6 +94,7 @@ php artisan tiket:release-expired
 - Dashboard admin: statistik, event, kategori, jenis tiket, dan semua order
 - Otorisasi customer/admin dengan Sanctum
 - Transaksi database atomik saat membuat order dan mengubah status kursi
+- Form profil dilindungi CSRF; upload divalidasi server dan dibatasi per pengguna
 
 ## Pengujian
 

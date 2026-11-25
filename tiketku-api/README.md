@@ -16,16 +16,15 @@ composer install
 cp .env.example .env                # hanya jika .env belum ada
 php artisan key:generate             # hanya jika APP_KEY belum terisi
 touch database/database.sqlite
-php artisan migrate:fresh --seed
+php artisan migrate:fresh --seed     # database baru; menghapus data lama
 php artisan serve --host=127.0.0.1 --port=8000
 ```
 
 Database default memakai **SQLite** (`database/database.sqlite`) sehingga tidak
-memerlukan server database tambahan. Untuk memakai MySQL, ubah `.env`:
+memerlukan server database tambahan. Jika database sudah berisi data, jalankan
+`php artisan migrate` untuk menerapkan skema terbaru tanpa menghapus data.
 
-Untuk database yang sudah berisi data, gunakan `php artisan migrate` agar
-kolom profil baru ditambahkan tanpa menghapus data. `migrate:fresh` menghapus
-dan membuat ulang seluruh tabel.
+Untuk memakai MySQL, ubah `.env`:
 
 ```env
 DB_CONNECTION=mysql
@@ -37,7 +36,8 @@ DB_PASSWORD=
 ```
 
 Buat database `tiketku` terlebih dahulu, lalu jalankan lagi
-`php artisan migrate:fresh --seed`.
+`php artisan migrate --seed`. Jangan gunakan `migrate:fresh` pada database yang
+datanya ingin dipertahankan.
 
 ## Akun demo
 
@@ -62,19 +62,20 @@ server API jika ingin pelepasan kursi berjalan otomatis.
 
 - Semua request wajib memakai header `Accept: application/json`.
 - Endpoint publik: `POST /api/register`, `POST /api/login`, kategori, daftar
-  event, detail event, dan foto profil publik.
+  event, detail event, dan `GET /api/users/{id}/avatar` (hanya berkas foto).
 - Endpoint terautentikasi memakai Bearer token Sanctum dari `POST /api/login`
   melalui header `Authorization: Bearer <token>`.
-- Endpoint customer: `GET /api/me`, `POST /api/profile` untuk memperbarui
-  username/foto profil, daftar/detail order, pembuatan order, pembayaran,
-  dan pembatalan.
+- Endpoint customer: `GET /api/me`, `POST /api/profile` (`multipart/form-data`)
+  untuk memperbarui username/foto profil, daftar/detail order, pembuatan order,
+  pembayaran, dan pembatalan.
 - Endpoint admin: statistik, CRUD event/kategori, tambah jenis tiket dan kursi,
   serta refund order.
 
-Upload foto profil menerima JPG, PNG, atau WebP hingga 2 MB dan divalidasi
-berdasarkan tipe serta dimensi gambar. Berkas disimpan dengan nama acak pada
-disk privat dan endpoint avatar hanya menyajikan berkas foto, bukan path
-penyimpanan atau data pengguna lainnya. Pembaruan profil dibatasi hingga 10
-permintaan per menit per pengguna.
+Field `username` wajib unik (3–30 karakter). Field `avatar` opsional menerima
+JPG, PNG, atau WebP hingga 2 MB dan ukuran 64×64–2048×2048 piksel. Field
+`remove_avatar=1` menghapus avatar lama. Backend memeriksa tipe serta dimensi
+gambar, menyimpan berkas dengan nama acak di disk privat, dan membatasi update
+profil hingga 10 permintaan per menit per pengguna. Endpoint avatar hanya
+menyajikan berkas gambar; path penyimpanan dan data profil lain tidak dibuka.
 
 Zona waktu aplikasi memakai `APP_TIMEZONE=Asia/Jakarta`.
